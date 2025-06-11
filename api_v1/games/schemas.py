@@ -9,7 +9,7 @@ class GameCreate(BaseModel):
     date_of_release: date
     age_censor: int
     developer: str
-    rating: int
+    rating: str
     genre: str
 
 class GameRead(BaseModel):
@@ -18,7 +18,7 @@ class GameRead(BaseModel):
     date_of_release: date
     age_censor: int
     developer: str
-    rating: int
+    rating: str
     genre: str
 
 class GameUpdatePartial(BaseModel):
@@ -27,7 +27,7 @@ class GameUpdatePartial(BaseModel):
     date_of_release: date | None = None
     age_censor: int | None = None
     developer: str | None = None
-    rating: int | None = None
+    rating: str | None = None
     genre: str | None = None
 
 class GameUpdateFull(BaseModel):
@@ -36,5 +36,5 @@ class GameUpdateFull(BaseModel):
     date_of_release: date
     age_censor: int
     developer: str
-    rating: int
+    rating: str
     genre: str
