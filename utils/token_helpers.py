@@ -1,10 +1,13 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
+from jwt import InvalidTokenError
 from pydantic import BaseModel
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
 from core.models import User
-from utils.jwt_helpers import encode_jwt
+from utils.db_helper import db_helper
+from utils.jwt_helpers import encode_jwt, decode_jwt
 
 
 class TokenModel(BaseModel):
@@ -47,3 +50,19 @@ def create_refresh_token(user: User):
                    'user_email': user.email}
     return create_token(payload=jwt_payload,
                         token_type='refresh')
+
+def get_current_token_payload(token: str = Depends(oauth2_scheme)):
+    try:
+        jwt = decode_jwt(token=token)
+    except InvalidTokenError:
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Please log in to view this page.')
+    return jwt
+
+async def get_user_by_token(payload: dict = Depends(get_current_token_payload), session: AsyncSession = Depends(db_helper.session_getter)):
+    token_type = payload.get('type')
+    if token_type != 'access':
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token type.')
+    user_id = payload.get('user_id')
+    if not (user := await session.get(User, user_id)):
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token data')
+    return user
