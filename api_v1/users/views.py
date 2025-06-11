@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.users.crud import create_user, login_user, update_user_partial, delete_user, update_user_full
 from api_v1.users.schemas import UserRead, UserCreate, UserUpdatePartial, UserUpdate
-from core.models import User
+from core.models import User, VerificationToken
 from utils.db_helper import db_helper
 from utils.email_helper import send_email, generate_secret_verification_code
 from utils.token_helpers import TokenModel, create_access_token, create_refresh_token, get_user_by_token
@@ -51,6 +51,10 @@ async def verify_email_view(user: User = Depends(get_user_by_token), session: As
     await send_email(recipient=user.email,
                subject='Email verification',
                body=f"Your verification code is {secret_code}. If this e-mail was sent by mistake just ignore it.")
+    verification_token = VerificationToken(**{'token': secret_code, 'user_email': user.email})
+    session.add(verification_token)
+    await session.commit()
+    await session.refresh(verification_token)
     return {'A secret code has been sent, please check your email.'}
 
 
