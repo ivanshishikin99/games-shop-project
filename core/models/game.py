@@ -12,5 +12,5 @@ class Game(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):
     date_of_release: Mapped[date] = mapped_column(nullable=False)
     age_censor: Mapped[int] = mapped_column(nullable=False)
     developer: Mapped[str] = mapped_column(nullable=False)
-    rating: Mapped[int] = mapped_column(nullable=False)
+    rating: Mapped[str] = mapped_column(nullable=False)
     genre: Mapped[str] = mapped_column(nullable=False)
