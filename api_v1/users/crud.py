@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api_v1.users.schemas import UserCreate
+from api_v1.users.schemas import UserCreate, UserUpdate
 from core.models import User
 from utils.password_helpers import hash_password, verify_password
 
@@ -28,3 +28,11 @@ async def login_user(username: str, password: str, session: AsyncSession) -> Use
     if not verify_password(password=password, hashed_password=user.password):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Wrong password.')
     return user
+
+async def update_user(user_to_update: User, user_info: UserUpdate, session: AsyncSession) -> User | ValueError:
+    for k, v in user_info.model_dump().items():
+        if v:
+            setattr(user_to_update, k, v)
+    await session.commit()
+    await session.refresh(user_to_update)
+    return user_to_update
