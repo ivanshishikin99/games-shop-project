@@ -15,9 +15,11 @@ async def create_user(user: UserCreate, session: AsyncSession) -> User:
     await session.refresh(user_created)
     return user_created
 
+
 async def get_user_by_id(user_id: int, session: AsyncSession) -> User | None:
     user = await session.get(User, user_id)
     return user
+
 
 async def login_user(username: str, password: str, session: AsyncSession) -> User | HTTPException:
     statement = select(User).where(User.username == username)
@@ -29,6 +31,7 @@ async def login_user(username: str, password: str, session: AsyncSession) -> Use
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Wrong password.')
     return user
 
+
 async def update_user_partial(user_to_update: User, user_info: UserUpdatePartial, session: AsyncSession) -> User | ValueError:
     for k, v in user_info.model_dump().items():
         if v:
@@ -37,12 +40,14 @@ async def update_user_partial(user_to_update: User, user_info: UserUpdatePartial
     await session.refresh(user_to_update)
     return user_to_update
 
+
 async def update_user_full(user_to_update: User, user_info: UserUpdate, session: AsyncSession) -> User:
     for k, v in user_info.model_dump().items():
         setattr(user_to_update, k, v)
     await session.commit()
     await session.refresh(user_to_update)
     return user_to_update
+
 
 async def delete_user(user: User, session: AsyncSession):
     await session.delete(user)
