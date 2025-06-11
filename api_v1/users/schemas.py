@@ -108,7 +108,7 @@ class UserRead(BaseModel):
     sex: str | None
     date_of_birth: date | None
 
-class UserUpdate(BaseModel):
+class UserUpdatePartial(BaseModel):
     email: EmailStr | None = None
     first_name: str | None = None
     last_name: str | None = None
@@ -154,6 +154,52 @@ class UserUpdate(BaseModel):
         if val:
             return val.capitalize()
 
+
+class UserUpdate(BaseModel):
+    email: EmailStr
+    first_name: str
+    last_name: str
+    country: str
+    phone_number: str
+    sex: str
+    date_of_birth: date
+
+    @field_validator('phone_number')
+    @classmethod
+    def verify_phone_number(cls, val: str) -> str | ValueError:
+        if val[0] != '+':
+            raise ValueError("Your phone number must start with the '+' symbol.")
+        if val[1] != '7' and val[1] != '8':
+            raise ValueError("Your phone number's first digit must be either 7 or 8.")
+        if not val[1::].isdigit():
+            raise ValueError('Incorrect phone number format.')
+        if len(val) < 12:
+            raise ValueError('Your phone number is too short.')
+        if len(val) > 12:
+            raise ValueError('Your phone number is too long.')
+        return val
+
+    @field_validator('date_of_birth')
+    @classmethod
+    def validate_date_of_birth(cls, val: date) -> date | ValueError:
+        if val.year > datetime.now().year or val.year < 1909:
+            raise ValueError('Incorrect year of birth.')
+        return val
+
+    @field_validator('sex')
+    @classmethod
+    def templatize_sex(cls, val: str) -> str | ValueError:
+        if not val.startswith('m') and not val.startswith('M') and not val.startswith('f') and not val.startswith('F'):
+            raise ValueError('Incorrect sex.')
+        if val.startswith('m') or val.startswith('M'):
+            return 'Male'
+        return 'Female'
+
+    @field_validator('first_name', 'last_name', 'country')
+    @classmethod
+    def capitalize_field(cls, val: str | None) -> str:
+        if val:
+            return val.capitalize()
 
     
 
