@@ -36,3 +36,8 @@ async def update_user(user_to_update: User, user_info: UserUpdate, session: Asyn
     await session.commit()
     await session.refresh(user_to_update)
     return user_to_update
+
+async def delete_user(user: User, session: AsyncSession):
+    await session.delete(user)
+    await session.commit()
+    return {'Success!'}
