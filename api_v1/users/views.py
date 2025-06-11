@@ -1,5 +1,8 @@
+import uuid
+
 from fastapi import APIRouter, status, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.users.crud import create_user, login_user, update_user_partial, delete_user, update_user_full
@@ -41,6 +44,11 @@ async def update_user_info_full_view(user_info: UserUpdate, session: AsyncSessio
     return await update_user_full(user_to_update=user, user_info=user_info, session=session)
 
 
+@router.delete('/delete_user')
+async def delete_user_view(user: User = Depends(get_user_by_token), session: AsyncSession = Depends(db_helper.session_getter)):
+    return await delete_user(user=user, session=session)
+
+
 @router.post('/verify_email')
 async def verify_email_view(user: User = Depends(get_user_by_token), session: AsyncSession = Depends(db_helper.session_getter)):
     if not user.email:
@@ -57,8 +65,15 @@ async def verify_email_view(user: User = Depends(get_user_by_token), session: As
     await session.refresh(verification_token)
     return {'A secret code has been sent, please check your email.'}
 
-
-@router.delete('/delete_user')
-async def delete_user_view(user: User = Depends(get_user_by_token), session: AsyncSession = Depends(db_helper.session_getter)):
-    return await delete_user(user=user, session=session)
-
+@router.post('/verify_email_token')
+async def verify_email_token_view(code: uuid.UUID, user: User = Depends(get_user_by_token), session: AsyncSession = Depends(db_helper.session_getter)):
+    statement = select(VerificationToken).where(VerificationToken.token == code)
+    token = await session.execute(statement)
+    token = token.scalar_one()
+    if not token:
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Wrong code.')
+    user.verified = True
+    user.role_access = 'Verified user'
+    await session.delete(token)
+    await session.commit()
+    return {'Your email has successfully been verified!'}
