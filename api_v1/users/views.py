@@ -6,6 +6,7 @@ from api_v1.users.crud import create_user, login_user, update_user
 from api_v1.users.schemas import UserRead, UserCreate, UserUpdate
 from core.models import User
 from utils.db_helper import db_helper
+from utils.email_helper import send_email
 from utils.token_helpers import TokenModel, create_access_token, create_refresh_token, get_user_by_token
 
 router = APIRouter(prefix='/users', tags=['Users'])
@@ -29,3 +30,15 @@ async def get_user_info_view(user: User = Depends(get_user_by_token)) -> User | 
 @router.patch('/update_user_info', response_model=UserRead, response_model_exclude_none=True, status_code=status.HTTP_202_ACCEPTED)
 async def update_user_info_view(user_info: UserUpdate, session: AsyncSession = Depends(db_helper.session_getter), user: User = Depends(get_user_by_token)) -> User | HTTPException:
     return await update_user(user_to_update=user, user_info=user_info, session=session)
+
+@router.post('/verify_email')
+async def verify_email_view(user: User = Depends(get_user_by_token), session: AsyncSession = Depends(db_helper.session_getter)):
+    if not user.email:
+        return HTTPException(status_code=status.HTTP_412_PRECONDITION_FAILED, detail='Please, specify your email in your profile.')
+    if user.verified:
+        return HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail='Your email has already been verified.')
+    await send_email(recipient=user.email,
+               subject='Email verification',
+               body='Secret code!')
+    return {'A secret code has been sent, please check your email.'}
+
