@@ -1,6 +1,8 @@
+import uuid
 from email.message import EmailMessage
 
 import aiosmtplib
+
 
 async def send_email(recipient: str,
                      subject: str,
@@ -16,3 +18,7 @@ async def send_email(recipient: str,
                           recipients=[recipient],
                           hostname='localhost',
                           port=1025)
+
+
+def generate_secret_verification_code():
+    return uuid.uuid4()
