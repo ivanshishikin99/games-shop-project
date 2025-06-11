@@ -2,7 +2,7 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api_v1.users.crud import create_user, login_user, update_user
+from api_v1.users.crud import create_user, login_user, update_user, delete_user
 from api_v1.users.schemas import UserRead, UserCreate, UserUpdate
 from core.models import User
 from utils.db_helper import db_helper
@@ -41,4 +41,8 @@ async def verify_email_view(user: User = Depends(get_user_by_token), session: As
                subject='Email verification',
                body='Secret code!')
     return {'A secret code has been sent, please check your email.'}
+
+@router.delete('/delete_user')
+async def delete_user_view(user: User = Depends(get_user_by_token), session: AsyncSession = Depends(db_helper.session_getter)):
+    return await delete_user(user=user, session=session)
 
