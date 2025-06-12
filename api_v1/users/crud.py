@@ -3,7 +3,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.users.schemas import UserCreate, UserUpdatePartial, UserUpdate
-from core.models import User
+from core.models import User, VerificationToken
 from utils.password_helpers import hash_password, verify_password
 
 
@@ -50,6 +50,11 @@ async def update_user_full(user_to_update: User, user_info: UserUpdate, session:
 
 
 async def delete_user(user: User, session: AsyncSession):
+    statement = select(VerificationToken).where(VerificationToken.user_email==user.email)
+    token = await session.execute(statement)
+    token = token.scalar_one()
+    await session.delete(token)
+    await session.commit()
     await session.delete(user)
     await session.commit()
     return {'Success!'}
