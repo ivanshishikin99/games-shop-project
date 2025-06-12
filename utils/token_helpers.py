@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
-from core.models import User
+from core.models import User, SuperUser
 from utils.db_helper import db_helper
 from utils.jwt_helpers import encode_jwt, decode_jwt
 
@@ -32,7 +32,7 @@ def create_token(payload: dict, token_type: str):
                       expire_minutes=expire_minutes)
 
 
-def create_access_token(user: User):
+def create_access_token(user: User | SuperUser):
     jwt_payload = {'sub': user.username,
                    'username': user.username,
                    'user_id': user.id,
@@ -43,7 +43,7 @@ def create_access_token(user: User):
                         token_type='access')
 
 
-def create_refresh_token(user: User):
+def create_refresh_token(user: User | SuperUser):
     jwt_payload = {'sub': user.username,
                    'username': user.username,
                    'user_id': user.id,
