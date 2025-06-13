@@ -55,14 +55,14 @@ def get_current_token_payload(token: str = Depends(oauth2_scheme)):
     try:
         jwt = decode_jwt(token=token)
     except InvalidTokenError:
-        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Please log in to view this page.')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Please log in to view this page.')
     return jwt
 
 async def get_user_by_token(payload: dict = Depends(get_current_token_payload), session: AsyncSession = Depends(db_helper.session_getter)):
     token_type = payload.get('type')
     if token_type != 'access':
-        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token type.')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token type.')
     user_id = payload.get('user_id')
     if not (user := await session.get(User, user_id)):
-        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token data.')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token data.')
     return user

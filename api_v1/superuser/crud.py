@@ -20,7 +20,7 @@ async def super_user_login(username: str, password: str, session: AsyncSession) 
     user = await session.execute(statement)
     user = user.scalar_one()
     if not user:
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found.')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found.')
     if not verify_password(password=password, hashed_password=user.password):
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Wrong password.')
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Wrong password.')
     return user

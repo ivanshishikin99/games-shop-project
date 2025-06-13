@@ -52,9 +52,9 @@ async def delete_user_view(user: User = Depends(get_user_by_token), session: Asy
 @router.post('/verify_email')
 async def verify_email_view(user: User = Depends(get_user_by_token), session: AsyncSession = Depends(db_helper.session_getter)):
     if not user.email:
-        return HTTPException(status_code=status.HTTP_412_PRECONDITION_FAILED, detail='Please, specify your email in your profile.')
+        raise HTTPException(status_code=status.HTTP_412_PRECONDITION_FAILED, detail='Please, specify your email in your profile.')
     if user.verified:
-        return HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail='Your email has already been verified.')
+        raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail='Your email has already been verified.')
     secret_code = generate_secret_verification_code()
     await send_email(recipient=user.email,
                subject='Email verification',
@@ -71,7 +71,7 @@ async def verify_email_token_view(code: uuid.UUID, user: User = Depends(get_user
     token = await session.execute(statement)
     token = token.scalar_one()
     if not token:
-        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Wrong code.')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Wrong code.')
     user.verified = True
     user.role_access = 'Verified user'
     await session.delete(token)

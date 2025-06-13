@@ -9,5 +9,5 @@ from utils.db_helper import db_helper
 async def get_game_by_id_dependency(game_id: int, session: AsyncSession = Depends(db_helper.session_getter)) -> Game | HTTPException:
     game = await get_game_by_id(game_id=game_id, session=session)
     if not game:
-        return HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
     return game
