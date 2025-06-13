@@ -64,5 +64,5 @@ async def get_user_by_token(payload: dict = Depends(get_current_token_payload), 
         return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token type.')
     user_id = payload.get('user_id')
     if not (user := await session.get(User, user_id)):
-        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token data')
+        return HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token data.')
     return user
