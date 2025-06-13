@@ -3,20 +3,20 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.superuser.schemas import SuperUserCreate
-from core.models import SuperUser
+from core.models import SuperUser, User
 from utils.password_helpers import hash_password, verify_password
 
 
-async def super_user_create(user_data: SuperUserCreate, session: AsyncSession) -> SuperUser:
+async def super_user_create(user_data: SuperUserCreate, session: AsyncSession) -> User:
     user_data.password = hash_password(password=user_data.password)
-    user = SuperUser(**user_data.model_dump())
+    user = User(**user_data.model_dump())
     session.add(user)
     await session.commit()
     await session.refresh(user)
     return user
 
-async def super_user_login(username: str, password: str, session: AsyncSession) -> SuperUser | HTTPException:
-    statement = select(SuperUser).where(SuperUser.username==username)
+async def super_user_login(username: str, password: str, session: AsyncSession) -> User | HTTPException:
+    statement = select(User).where(User.username==username)
     user = await session.execute(statement)
     user = user.scalar_one()
     if not user:
