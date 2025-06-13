@@ -2,6 +2,8 @@ from contextlib import asynccontextmanager
 from api_v1.views import router as api_v1_router
 import uvicorn
 from fastapi import FastAPI
+
+from middleware.logging_middleware import register_middleware
 from utils.db_helper import db_helper
 
 
@@ -10,7 +12,9 @@ async def lifespan(app: FastAPI):
     yield
     await db_helper.dispose()
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(lifespan=lifespan, title='Games shop')
+
+register_middleware(app=app)
 
 app.include_router(router=api_v1_router)
 
