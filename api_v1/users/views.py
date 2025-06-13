@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi import APIRouter, status, Depends, HTTPException, BackgroundTasks
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -9,7 +9,7 @@ from api_v1.users.crud import create_user, login_user, update_user_partial, dele
 from api_v1.users.schemas import UserRead, UserCreate, UserUpdatePartial, UserUpdate
 from core.models import User, VerificationToken
 from utils.db_helper import db_helper
-from utils.email_helper import send_email, generate_secret_verification_code
+from utils.email_helper import generate_secret_verification_code, send_email_dependency
 from utils.token_helpers import TokenModel, create_access_token, create_refresh_token, get_user_by_token
 
 router = APIRouter(prefix='/users', tags=['Users'])
@@ -50,15 +50,13 @@ async def delete_user_view(user: User = Depends(get_user_by_token), session: Asy
 
 
 @router.post('/verify_email')
-async def verify_email_view(user: User = Depends(get_user_by_token), session: AsyncSession = Depends(db_helper.session_getter)):
+async def verify_email_view(background_tasks: BackgroundTasks, user: User = Depends(get_user_by_token), session: AsyncSession = Depends(db_helper.session_getter)):
     if not user.email:
         raise HTTPException(status_code=status.HTTP_412_PRECONDITION_FAILED, detail='Please, specify your email in your profile.')
     if user.verified:
         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail='Your email has already been verified.')
     secret_code = generate_secret_verification_code()
-    await send_email(recipient=user.email,
-               subject='Email verification',
-               body=f"Your verification code is {secret_code}. If this e-mail was sent by mistake just ignore it.")
+    background_tasks.add_task(send_email_dependency, user.id, secret_code)
     verification_token = VerificationToken(**{'token': secret_code, 'user_email': user.email})
     session.add(verification_token)
     await session.commit()
