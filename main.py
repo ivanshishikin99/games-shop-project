@@ -14,5 +14,9 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(router=api_v1_router)
 
+@app.get('/')
+async def main_page():
+    return {'Success'}
+
 if __name__ == '__main__':
     uvicorn.run('main:app', reload=True)
