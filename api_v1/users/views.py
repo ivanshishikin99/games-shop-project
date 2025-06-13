@@ -7,9 +7,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.users.crud import create_user, login_user, update_user_partial, delete_user, update_user_full
 from api_v1.users.schemas import UserRead, UserCreate, UserUpdatePartial, UserUpdate
+from background_tasks.background_email_sender import send_email_background_task
 from core.models import User, VerificationToken
 from utils.db_helper import db_helper
-from utils.email_helper import generate_secret_verification_code, send_email_dependency
+from utils.email_helper import generate_secret_verification_code
 from utils.token_helpers import TokenModel, create_access_token, create_refresh_token, get_user_by_token
 
 router = APIRouter(prefix='/users', tags=['Users'])
@@ -56,7 +57,7 @@ async def verify_email_view(background_tasks: BackgroundTasks, user: User = Depe
     if user.verified:
         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED, detail='Your email has already been verified.')
     secret_code = generate_secret_verification_code()
-    background_tasks.add_task(send_email_dependency, user.id, secret_code)
+    background_tasks.add_task(send_email_background_task, user.id, secret_code)
     verification_token = VerificationToken(**{'token': secret_code, 'user_email': user.email})
     session.add(verification_token)
     await session.commit()
