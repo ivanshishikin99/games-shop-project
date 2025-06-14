@@ -17,7 +17,7 @@ class LoggingConfig(BaseModel):
         "warning",
         "error",
         "critical",
-    ] = "info"
+    ] = logging.INFO
     log_format: str = LOG_DEFAULT_FORMAT
 
     @property
@@ -52,5 +52,6 @@ class Settings(BaseSettings):
                                       case_sensitive=False)
     db: DbConfig
     auth_jwt: AuthJWT = AuthJWT()
+    logging_config: LoggingConfig = LoggingConfig()
 
 settings = Settings()
