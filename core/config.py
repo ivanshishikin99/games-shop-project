@@ -53,6 +53,12 @@ class AuthJWT(BaseModel):
     public_key_path: Path = BASE_DIR / 'certs' / 'public_key.pem'
     private_key_path: Path = BASE_DIR / 'certs' / 'private_key.pem'
 
+class MiddlewareConfig(BaseModel):
+    allow_origins: list[str] = [
+    "http://localhost",
+    "http://localhost:8000"
+    ]
+
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file='.env',
                                       env_prefix='APP_CONFIG__',
@@ -63,5 +69,6 @@ class Settings(BaseSettings):
     logging_config: LoggingConfig = LoggingConfig()
     task_iq_config: TaskIqConfig = TaskIqConfig()
     mail_config: MailConfig = MailConfig()
+    middleware_config: MiddlewareConfig = MiddlewareConfig()
 
 settings = Settings()
