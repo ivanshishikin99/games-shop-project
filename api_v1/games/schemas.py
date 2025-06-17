@@ -1,5 +1,4 @@
 from datetime import date
-
 from pydantic import BaseModel
 
 
@@ -12,6 +11,7 @@ class GameCreate(BaseModel):
     rating: str
     genre: str
 
+
 class GameRead(BaseModel):
     name: str
     price: int
@@ -21,6 +21,7 @@ class GameRead(BaseModel):
     rating: str
     genre: str
 
+
 class GameUpdatePartial(BaseModel):
     name: str | None = None
     price: int | None = None
@@ -29,6 +30,7 @@ class GameUpdatePartial(BaseModel):
     developer: str | None = None
     rating: str | None = None
     genre: str | None = None
+
 
 class GameUpdateFull(BaseModel):
     name: str

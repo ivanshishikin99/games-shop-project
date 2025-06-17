@@ -1,6 +1,6 @@
-from datetime import datetime, timezone, timedelta
-
 import jwt
+
+from datetime import datetime, timezone, timedelta
 
 from core.config import settings
 
@@ -17,6 +17,7 @@ def encode_jwt(payload: dict,
     return jwt.encode(payload=to_encode,
                       key=private_key,
                       algorithm=algorithm)
+
 
 def decode_jwt(token: str | bytes,
                algorithm: str = settings.auth_jwt.algorithm,

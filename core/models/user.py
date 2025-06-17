@@ -1,6 +1,6 @@
 from datetime import date
-
 from sqlalchemy.orm import Mapped, mapped_column
+
 from core.models.mixins import IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin
 from core.models import Base
 

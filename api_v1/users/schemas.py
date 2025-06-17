@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from pydantic import BaseModel, Field, EmailStr, field_validator
+from pydantic import BaseModel, EmailStr, field_validator
 
 
 class UserCreate(BaseModel):
@@ -16,7 +16,7 @@ class UserCreate(BaseModel):
     sex: str | None = None
     date_of_birth: date | None = None
 
-    @field_validator('first_name', 'last_name', 'country')
+    @field_validator('first_name','last_name', 'country')
     @classmethod
     def capitalize_field(cls, val: str | None) -> str:
         if val:
@@ -25,7 +25,9 @@ class UserCreate(BaseModel):
     @field_validator('password')
     @classmethod
     def validate_password(cls, val: str) -> str | ValueError:
-        special_symbols = ['@', '#', '$', '%', '&', '!', '?', '[', ']', '(', ')', '£', '€', '¥', '<', '>', '{', '}', '+', '-', '=', '\\', '/', ',', '.', ':', ';', '`', '#', '^', '*']
+        special_symbols = ['@', '#', '$', '%', '&', '!', '?', '[', ']',
+                           '(', ')', '£', '€', '¥', '<', '>', '{', '}',
+                           '+', '-', '=', '\\', '/', ',', '.', ':', ';', '`', '#', '^', '*']
         special_symbols_flag = False
         digits_flag = False
         if val.lower() == val:
@@ -63,7 +65,8 @@ class UserCreate(BaseModel):
     @field_validator('sex')
     @classmethod
     def templatize_sex(cls, val: str) -> str | ValueError:
-        if not val.startswith('m') and not val.startswith('M') and not val.startswith('f') and not val.startswith('F'):
+        if (not val.startswith('m') and not val.startswith('M')
+                and not val.startswith('f') and not val.startswith('F')):
             raise ValueError('Incorrect sex.')
         if val.startswith('m') or val.startswith('M'):
             return 'Male'
@@ -97,6 +100,7 @@ class UserCreate(BaseModel):
             raise ValueError('Your username is too long.')
         return val
 
+
 class UserRead(BaseModel):
     username: str
     verified: bool
@@ -107,6 +111,7 @@ class UserRead(BaseModel):
     phone_number: str | None
     sex: str | None
     date_of_birth: date | None
+
 
 class UserUpdatePartial(BaseModel):
     email: EmailStr | None = None
@@ -142,7 +147,8 @@ class UserUpdatePartial(BaseModel):
     @field_validator('sex')
     @classmethod
     def templatize_sex(cls, val: str) -> str | ValueError:
-        if not val.startswith('m') and not val.startswith('M') and not val.startswith('f') and not val.startswith('F'):
+        if (not val.startswith('m') and not val.startswith('M')
+                and not val.startswith('f') and not val.startswith('F')):
             raise ValueError('Incorrect sex.')
         if val.startswith('m') or val.startswith('M'):
             return 'Male'
@@ -189,7 +195,8 @@ class UserUpdate(BaseModel):
     @field_validator('sex')
     @classmethod
     def templatize_sex(cls, val: str) -> str | ValueError:
-        if not val.startswith('m') and not val.startswith('M') and not val.startswith('f') and not val.startswith('F'):
+        if (not val.startswith('m') and not val.startswith('M')
+                and not val.startswith('f') and not val.startswith('F')):
             raise ValueError('Incorrect sex.')
         if val.startswith('m') or val.startswith('M'):
             return 'Male'

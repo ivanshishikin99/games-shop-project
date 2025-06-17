@@ -16,7 +16,8 @@ async def lifespan(app: FastAPI):
     await db_helper.dispose()
     await broker.shutdown()
 
-app = FastAPI(lifespan=lifespan, title='Games shop')
+app = FastAPI(lifespan=lifespan,
+              title='Games shop')
 
 register_error_handlers(app=app)
 
@@ -24,9 +25,11 @@ register_middleware(app=app)
 
 app.include_router(router=api_v1_router)
 
+
 @app.get('/')
 async def main_page():
     return {'Success'}
 
 if __name__ == '__main__':
-    uvicorn.run('main:app', reload=True)
+    uvicorn.run('main:app',
+                reload=True)

@@ -29,6 +29,7 @@ class DbHelper:
         async with self.session_maker() as session:
             yield session
 
+
 db_helper = DbHelper(url=str(settings.db.url),
                      echo=settings.db.echo,
                      echo_pool=settings.db.echo_pool,

@@ -1,5 +1,6 @@
 import uuid
 import aiosmtplib
+
 from email.message import EmailMessage
 from core.config import settings
 

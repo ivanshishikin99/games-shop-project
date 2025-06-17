@@ -1,5 +1,4 @@
 from datetime import date, datetime
-
 from pydantic import EmailStr, field_validator, BaseModel
 
 
@@ -24,8 +23,9 @@ class SuperUserCreate(BaseModel):
     @field_validator('password')
     @classmethod
     def validate_password(cls, val: str) -> str | ValueError:
-        special_symbols = ['@', '#', '$', '%', '&', '!', '?', '[', ']', '(', ')', '£', '€', '¥', '<', '>', '{', '}',
-                           '+', '-', '=', '\\', '/', ',', '.', ':', ';', '`', '#', '^', '*']
+        special_symbols = ['@', '#', '$', '%', '&', '!', '?', '[', ']', '(', ')', '£',
+                           '€', '¥', '<', '>', '{', '}', '+', '-', '=', '\\', '/', ',',
+                           '.', ':', ';', '`', '#', '^', '*']
         special_symbols_flag = False
         digits_flag = False
         if val.lower() == val:
@@ -63,7 +63,8 @@ class SuperUserCreate(BaseModel):
     @field_validator('sex')
     @classmethod
     def templatize_sex(cls, val: str) -> str | ValueError:
-        if not val.startswith('m') and not val.startswith('M') and not val.startswith('f') and not val.startswith('F'):
+        if (not val.startswith('m') and not val.startswith('M')
+                and not val.startswith('f') and not val.startswith('F')):
             raise ValueError('Incorrect sex.')
         if val.startswith('m') or val.startswith('M'):
             return 'Male'

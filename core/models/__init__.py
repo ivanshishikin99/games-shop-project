@@ -2,6 +2,7 @@ __all__ = ('Base',
            'User',
            'VerificationToken',
            'Game',
+           'SuperUser',
            )
 
 from .base import Base

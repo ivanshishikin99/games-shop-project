@@ -4,9 +4,12 @@ from utils.db_helper import db_helper
 from utils.email_helper import send_email
 
 
-async def send_email_background_task(user_id: int, secret_code: str):
+async def send_email_background_task(user_id: int,
+                                     secret_code: str):
     async with db_helper.session_maker() as session:
-        user: User = await crud.get_user_by_id(user_id=user_id, session=session)
+        user: User = await crud.get_user_by_id(user_id=user_id,
+                                               session=session)
     await send_email(recipient=user.email,
                      subject='Email verification',
                      body=f"Your verification code is {secret_code}. If this e-mail was sent by mistake just ignore it.")
+    

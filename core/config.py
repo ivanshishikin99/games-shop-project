@@ -1,13 +1,13 @@
 import logging
 from pathlib import Path
 from typing import Literal
-
 from pydantic import BaseModel, PostgresDsn, AmqpDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+
 BASE_DIR = Path(__file__).parent.parent
 
-LOG_DEFAULT_FORMAT = ("[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s")
+LOG_DEFAULT_FORMAT = "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
 
 
 class LoggingConfig(BaseModel):
@@ -24,13 +24,16 @@ class LoggingConfig(BaseModel):
     def log_level_value(self) -> int:
         return logging.getLevelNamesMapping()[self.log_level.upper()]
 
+
 class TaskIqConfig(BaseModel):
     url: AmqpDsn = "amqp://guest:guest@localhost:5672//"
+
 
 class MailConfig(BaseModel):
     admin_email: str = "games_shop@mail.ru"
     hostname: str = 'localhost'
     port: int = 1025
+
 
 class DbConfig(BaseModel):
     url: PostgresDsn
@@ -46,6 +49,7 @@ class DbConfig(BaseModel):
         "pk": "pk_%(table_name)s",
     }
 
+
 class AuthJWT(BaseModel):
     algorithm: str = 'RS256'
     access_token_expire_minutes: int = 5
@@ -53,11 +57,13 @@ class AuthJWT(BaseModel):
     public_key_path: Path = BASE_DIR / 'certs' / 'public_key.pem'
     private_key_path: Path = BASE_DIR / 'certs' / 'private_key.pem'
 
+
 class MiddlewareConfig(BaseModel):
     allow_origins: list[str] = [
     "http://localhost",
     "http://localhost:8000"
     ]
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file='.env',
@@ -70,5 +76,6 @@ class Settings(BaseSettings):
     task_iq_config: TaskIqConfig = TaskIqConfig()
     mail_config: MailConfig = MailConfig()
     middleware_config: MiddlewareConfig = MiddlewareConfig()
+
 
 settings = Settings()
