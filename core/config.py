@@ -2,7 +2,7 @@ import logging
 from pathlib import Path
 from typing import Literal
 
-from pydantic import BaseModel, PostgresDsn
+from pydantic import BaseModel, PostgresDsn, AmqpDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent
@@ -23,6 +23,14 @@ class LoggingConfig(BaseModel):
     @property
     def log_level_value(self) -> int:
         return logging.getLevelNamesMapping()[self.log_level.upper()]
+
+class TaskIqConfig(BaseModel):
+    url: AmqpDsn = "amqp://guest:guest@localhost:5672//"
+
+class MailConfig(BaseModel):
+    admin_email: str = "games_shop@mail.ru"
+    hostname: str = 'localhost'
+    port: int = 1025
 
 class DbConfig(BaseModel):
     url: PostgresDsn
@@ -53,5 +61,7 @@ class Settings(BaseSettings):
     db: DbConfig
     auth_jwt: AuthJWT = AuthJWT()
     logging_config: LoggingConfig = LoggingConfig()
+    task_iq_config: TaskIqConfig = TaskIqConfig()
+    mail_config: MailConfig = MailConfig()
 
 settings = Settings()
