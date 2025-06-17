@@ -1,17 +1,13 @@
 import uuid
-from email.message import EmailMessage
-
 import aiosmtplib
-
-from api_v1.users import crud
-from core.models import User
-from utils.db_helper import db_helper
+from email.message import EmailMessage
+from core.config import settings
 
 
 async def send_email(recipient: str,
                      subject: str,
                      body: str):
-    admin_email = 'games_shop@mail.ru'
+    admin_email = settings.mail_config.admin_email
     message = EmailMessage()
     message['From'] = admin_email
     message['To'] = recipient
@@ -20,8 +16,8 @@ async def send_email(recipient: str,
     await aiosmtplib.send(message,
                           sender=admin_email,
                           recipients=[recipient],
-                          hostname='localhost',
-                          port=1025)
+                          hostname=settings.mail_config.hostname,
+                          port=settings.mail_config.port)
 
 
 def generate_secret_verification_code():
