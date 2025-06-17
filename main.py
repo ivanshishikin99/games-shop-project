@@ -1,7 +1,9 @@
+import uvicorn
 from contextlib import asynccontextmanager
 from api_v1.views import router as api_v1_router
-import uvicorn
 from fastapi import FastAPI
+
+from core.taskiq_broker import broker
 from error_handlers import register_error_handlers
 from middleware.register_middleware import register_middleware
 from utils.db_helper import db_helper
@@ -9,8 +11,10 @@ from utils.db_helper import db_helper
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    await broker.startup()
     yield
     await db_helper.dispose()
+    await broker.shutdown()
 
 app = FastAPI(lifespan=lifespan, title='Games shop')
 
