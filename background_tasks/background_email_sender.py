@@ -1,7 +1,7 @@
 from api_v1.users import crud
 from core.models import User
 from utils.db_helper import db_helper
-from utils.email_helper import send_email
+from mailing.email_helper import send_email
 
 
 async def send_email_background_task(user_id: int,
