@@ -10,8 +10,9 @@ from api_v1.users.schemas import UserRead, UserCreate, UserUpdatePartial, UserUp
 from background_tasks.background_email_sender import send_email_background_task
 from core.models import User, VerificationToken
 from utils.db_helper import db_helper
-from utils.email_helper import generate_secret_verification_code
+from mailing.email_helper import generate_secret_verification_code
 from utils.token_helpers import TokenModel, create_access_token, create_refresh_token, get_user_by_token
+from tasks import send_welcome_email
 
 
 router = APIRouter(prefix='/users', tags=['Users'])
@@ -21,8 +22,11 @@ router = APIRouter(prefix='/users', tags=['Users'])
              status_code=status.HTTP_201_CREATED)
 async def register_user_view(user: UserCreate,
                              session: AsyncSession = Depends(db_helper.session_getter)) -> User:
-    return await create_user(user=user,
+    user_created = await create_user(user=user,
                              session=session)
+    if user_created.email:
+        await send_welcome_email.kiq(user_id=user_created.id)
+    return user_created
 
 
 @router.post('/login', response_model=TokenModel, status_code=status.HTTP_200_OK)
