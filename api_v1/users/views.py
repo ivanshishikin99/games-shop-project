@@ -93,7 +93,7 @@ async def verify_email_view(background_tasks: BackgroundTasks,
     session.add(verification_token)
     await session.commit()
     await session.refresh(verification_token)
-    return {'A secret code has been sent, please check your email.'}
+    return {'A secret code has been sent, please check your email. Beware that the token is only valid for 1 hour.'}
 
 
 @router.post('/verify_email_token')
