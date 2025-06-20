@@ -10,3 +10,7 @@ docker compose up -d pg maildev rabbitmq
 
 taskiq worker core:broker --fs-discover --tasks-pattern "**/tasks"
 
+#If poetry stops working
+
+python -m pip install requests-toolbelt 
+
