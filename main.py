@@ -1,8 +1,14 @@
+import asyncio
 import uvicorn
 from contextlib import asynccontextmanager
+
+from fastapi_utils.tasks import repeat_every
+
 from api_v1.views import router as api_v1_router
 from fastapi import FastAPI
 
+
+from utils.delete_expired_verification_tokens import delete_tokens
 from core.taskiq_broker import broker
 from error_handlers import register_error_handlers
 from middleware.register_middleware import register_middleware
@@ -12,6 +18,7 @@ from utils.db_helper import db_helper
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await broker.startup()
+    asyncio.create_task(delete_tokens())
     yield
     await db_helper.dispose()
     await broker.shutdown()
