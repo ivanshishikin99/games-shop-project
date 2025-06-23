@@ -1,9 +1,13 @@
 from datetime import date
-from sqlalchemy.orm import Mapped, mapped_column
+from typing import TYPE_CHECKING
 
-from core.models import Base
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from core.models.base import Base
 from core.models.mixins import IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin
+from core.models.game_genre import game_genre_association_table
 
+if TYPE_CHECKING:
+    from core.models.genre import Genre
 
 class Game(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):
     name: Mapped[str] = mapped_column(nullable=False)
@@ -12,4 +16,7 @@ class Game(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):
     age_censor: Mapped[int] = mapped_column(nullable=False)
     developer: Mapped[str] = mapped_column(nullable=False)
     rating: Mapped[str] = mapped_column(nullable=False)
-    genre: Mapped[str] = mapped_column(nullable=False)
+    genres: Mapped[list["Genre"]] = relationship(secondary=game_genre_association_table,
+                                                 back_populates="games",
+                                                 lazy="selectin")
+
