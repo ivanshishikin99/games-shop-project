@@ -14,7 +14,7 @@ from utils.db_helper import db_helper
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await broker.startup()
-    await asyncio.create_task(delete_tokens())
+    asyncio.create_task(delete_tokens())
     yield
     await db_helper.dispose()
     await broker.shutdown()
