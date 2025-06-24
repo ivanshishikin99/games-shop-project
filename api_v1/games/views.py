@@ -7,6 +7,7 @@ from api_v1.games.crud import create_game, delete_game, update_game_partial, upd
 from api_v1.games.dependencies import get_game_by_id_dependency
 from api_v1.games.schemas import GameRead, GameCreate, GameUpdatePartial, GameUpdateFull
 from core.models import Game, User
+from utils import super_user_validate
 from utils.db_helper import db_helper
 from utils.token_helpers import get_user_by_token
 
@@ -19,11 +20,9 @@ router = APIRouter(prefix='/games', tags=['Games'])
 async def create_game_view(game: GameCreate,
                            user: User = Depends(get_user_by_token),
                            session: AsyncSession = Depends(db_helper.session_getter)) -> Game | HTTPException:
-    if not user.role_access == 'Super user':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail='You are not authorized to view this page.')
-    return await create_game(game_info=game,
-                             session=session)
+    if super_user_validate(user=user):
+        return await create_game(game_info=game,
+                                 session=session)
 
 
 @router.delete('/delete_game/{game_id}')
@@ -31,10 +30,8 @@ async def delete_game_view(game_id: int,
                            user: User = Depends(get_user_by_token),
                            game: Game = Depends(get_game_by_id_dependency),
                            session: AsyncSession = Depends(db_helper.session_getter)):
-    if not user.role_access == 'Super user':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail='You are not authorized to view this page.')
-    return await delete_game(game=game,
+    if super_user_validate(user=user):
+        return await delete_game(game=game,
                              session=session)
 
 
@@ -45,10 +42,8 @@ async def update_game_partial_view(game_id: int,
                                    user: User = Depends(get_user_by_token),
                                    game: Game = Depends(get_game_by_id_dependency),
                                    session: AsyncSession = Depends(db_helper.session_getter)) -> Game | HTTPException:
-    if not user.role_access == 'Super user':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail='You are not authorized to view this page.')
-    return await update_game_partial(game_to_update=game,
+    if super_user_validate(user=user):
+        return await update_game_partial(game_to_update=game,
                                      game_data=game_data,
                                      session=session)
 
@@ -60,10 +55,8 @@ async def update_game_full_view(game_id: int,
                                 user: User = Depends(get_user_by_token),
                                 game: Game = Depends(get_game_by_id_dependency),
                                 session: AsyncSession = Depends(db_helper.session_getter)) -> Game | HTTPException:
-    if not user.role_access == 'Super user':
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
-                            detail='You are not authorized to view this page.')
-    return await update_game_full(game_to_update=game,
+    if super_user_validate(user=user):
+        return await update_game_full(game_to_update=game,
                                   game_data=game_data,
                                   session=session)
 
@@ -72,12 +65,16 @@ async def update_game_full_view(game_id: int,
             status_code=status.HTTP_202_ACCEPTED)
 async def get_game_info_by_id_view(game_id: int,
                               session: AsyncSession = Depends(db_helper.session_getter),
+                              user: User = Depends(get_user_by_token),
                               game: Game = Depends(get_game_by_id_dependency)):
-    return game
+    if super_user_validate(user=user):
+        return game
 
 
 @router.get('/get_genres_by_game_id')
 async def get_genres_info_by_game_id_view(game_id: int,
                                           session: AsyncSession = Depends(db_helper.session_getter),
+                                          user: User = Depends(get_user_by_token),
                                           game: Game = Depends(get_game_by_id_dependency)):
-    return game.genres
+    if super_user_validate(user=user):
+        return game.genres
