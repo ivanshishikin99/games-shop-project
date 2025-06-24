@@ -9,7 +9,7 @@ class GameCreate(BaseModel):
     age_censor: int
     developer: str
     rating: str
-    genre: str
+    genres: list[str] = []
 
 
 class GameRead(BaseModel):
@@ -19,7 +19,6 @@ class GameRead(BaseModel):
     age_censor: int
     developer: str
     rating: str
-    genre: str
 
 
 class GameUpdatePartial(BaseModel):
