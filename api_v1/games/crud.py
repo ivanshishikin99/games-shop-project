@@ -51,9 +51,26 @@ async def delete_game(game: Game,
 async def update_game_partial(game_to_update: Game,
                               game_data: GameUpdatePartial,
                               session: AsyncSession) -> Game:
+    if game_data.genres:
+        game_to_update.genres.clear()
     for k, v in game_data.model_dump().items():
-        if k:
+        if k and k != 'genres':
             setattr(game_to_update, k, v)
+        elif k == 'genres':
+            for i in k:
+                try:
+                    statement = select(Genre).where(Genre.genre_name == i)
+                    genre = await session.execute(statement)
+                    genre = genre.scalar_one()
+                    game_to_update.genres.append(genre)
+                    await session.commit()
+                except:
+                    genre = Genre(genre_name=i)
+                    session.add(genre)
+                    await session.commit()
+                    await session.refresh(genre)
+                    game_to_update.genres.append(genre)
+                    await session.commit()
     await session.commit()
     await session.refresh(game_to_update)
     return game_to_update
@@ -62,8 +79,25 @@ async def update_game_partial(game_to_update: Game,
 async def update_game_full(game_to_update: Game,
                            game_data: GameUpdateFull,
                            session: AsyncSession) -> Game:
+    game_to_update.genres.clear()
     for k, v in game_data.model_dump().items():
-        setattr(game_to_update, k, v)
+        if k != "genres":
+            setattr(game_to_update, k, v)
+        else:
+            for i in k:
+                try:
+                    statement = select(Genre).where(Genre.genre_name == i)
+                    genre = await session.execute(statement)
+                    genre = genre.scalar_one()
+                    game_to_update.genres.append(genre)
+                    await session.commit()
+                except:
+                    genre = Genre(genre_name=i)
+                    session.add(genre)
+                    await session.commit()
+                    await session.refresh(genre)
+                    game_to_update.genres.append(genre)
+                    await session.commit()
     await session.commit()
     await session.refresh(game_to_update)
     return game_to_update
