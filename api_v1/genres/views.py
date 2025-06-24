@@ -5,7 +5,7 @@ from api_v1.genres.crud import create_genre, update_genre, delete_genre
 from api_v1.genres.dependencies import get_genre_by_id_dependency
 from api_v1.genres.schemas import GenreCreate, GenreRead, GenreUpdate
 from core.models import User, Genre
-from utils import super_user_validate
+from utils.super_user_validation import super_user_validate
 from utils.db_helper import db_helper
 from utils.token_helpers import get_user_by_token
 
