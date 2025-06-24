@@ -1,15 +1,37 @@
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from api_v1.games.schemas import GameCreate, GameUpdatePartial, GameUpdateFull
-from core.models import Game
+from core.models import Game, Genre
 
 
-async def create_game(game: GameCreate,
+async def create_game(game_info: GameCreate,
                       session: AsyncSession) -> Game:
-    game_created = Game(**game.model_dump())
+    game_created = Game(name=game_info.name,
+                        price=game_info.price,
+                        date_of_release=game_info.date_of_release,
+                        age_censor=game_info.age_censor,
+                        developer=game_info.developer,
+                        rating=game_info.rating)
     session.add(game_created)
     await session.commit()
     await session.refresh(game_created)
+    game = await session.get(Game, game_created.id, options=(selectinload(Game.genres),))
+    for i in game_info.genres:
+        try:
+            statement = select(Genre).where(Genre.genre_name == i)
+            genre = await session.execute(statement)
+            genre = genre.scalar_one()
+            game.genres.append(genre)
+            await session.commit()
+        except:
+            genre = Genre(genre_name=i)
+            session.add(genre)
+            await session.commit()
+            await session.refresh(genre)
+            game.genres.append(genre)
+            await session.commit()
     return game_created
 
 
