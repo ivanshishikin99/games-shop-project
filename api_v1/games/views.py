@@ -1,5 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from api_v1.games.crud import create_game, delete_game, update_game_partial, update_game_full
 from api_v1.games.dependencies import get_game_by_id_dependency
@@ -20,7 +22,7 @@ async def create_game_view(game: GameCreate,
     if not user.role_access == 'Super user':
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,
                             detail='You are not authorized to view this page.')
-    return await create_game(game=game,
+    return await create_game(game_info=game,
                              session=session)
 
 
@@ -69,5 +71,6 @@ async def update_game_full_view(game_id: int,
 @router.get('/get_game_info/{game_id}', response_model=GameRead, response_model_exclude_none=True,
             status_code=status.HTTP_202_ACCEPTED)
 async def get_game_info_by_id(game_id: int,
+                              session: AsyncSession = Depends(db_helper.session_getter),
                               game: Game = Depends(get_game_by_id_dependency)):
     return game
