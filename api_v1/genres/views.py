@@ -27,6 +27,13 @@ async def get_genre_by_id_view(genre_id: int,
                                genre: Genre = Depends(get_genre_by_id_dependency)) -> Genre:
     return genre
 
+
+@router.get('/get_games_by_genre_id')
+async def get_games_by_genre_id_view(genre_id: int,
+                                     genre: Genre = Depends(get_genre_by_id_dependency)):
+    return genre.games
+
+
 @router.patch('/update_genre', response_model=GenreRead, response_model_exclude_none=True)
 async def update_genre_view(genre_id: int,
                             genre_new: GenreUpdate,
