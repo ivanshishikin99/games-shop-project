@@ -7,7 +7,7 @@ from api_v1.games.crud import create_game, delete_game, update_game_partial, upd
 from api_v1.games.dependencies import get_game_by_id_dependency
 from api_v1.games.schemas import GameRead, GameCreate, GameUpdatePartial, GameUpdateFull
 from core.models import Game, User
-from utils import super_user_validate
+from utils.super_user_validation import super_user_validate
 from utils.db_helper import db_helper
 from utils.token_helpers import get_user_by_token
 
