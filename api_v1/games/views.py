@@ -68,9 +68,16 @@ async def update_game_full_view(game_id: int,
                                   session=session)
 
 
-@router.get('/get_game_info/{game_id}', response_model=GameRead, response_model_exclude_none=True,
+@router.get('/get_game_info/', response_model=GameRead, response_model_exclude_none=True,
             status_code=status.HTTP_202_ACCEPTED)
-async def get_game_info_by_id(game_id: int,
+async def get_game_info_by_id_view(game_id: int,
                               session: AsyncSession = Depends(db_helper.session_getter),
                               game: Game = Depends(get_game_by_id_dependency)):
     return game
+
+
+@router.get('/get_genres_by_game_id')
+async def get_genres_info_by_game_id_view(game_id: int,
+                                          session: AsyncSession = Depends(db_helper.session_getter),
+                                          game: Game = Depends(get_game_by_id_dependency)):
+    return game.genres
