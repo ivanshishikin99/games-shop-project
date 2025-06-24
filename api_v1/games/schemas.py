@@ -28,7 +28,8 @@ class GameUpdatePartial(BaseModel):
     age_censor: int | None = None
     developer: str | None = None
     rating: str | None = None
-    genre: str | None = None
+    genres: list[str] | None = None
+
 
 
 class GameUpdateFull(BaseModel):
@@ -38,4 +39,4 @@ class GameUpdateFull(BaseModel):
     age_censor: int
     developer: str
     rating: str
-    genre: str
+    genres: list[str]
