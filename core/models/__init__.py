@@ -5,6 +5,7 @@ __all__ = ('Base',
            'SuperUser',
            'Genre',
            'game_genre_association_table',
+           'Review'
            )
 
 from .base import Base
@@ -14,3 +15,4 @@ from .game import Game
 from .superuser import SuperUser
 from .genre import Genre
 from .game_genre import game_genre_association_table
+from .review import Review
