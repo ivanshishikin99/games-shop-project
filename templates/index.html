@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Список игр</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            line-height: 1.6;
+        }
+        h1 {
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 8px;
+            margin: 5px 0;
+            background: #f4f4f4;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Список игр</h1>
+    <div id="loading">Загрузка...</div>
+    <ul id="games-list"></ul>
+
+    <script>
+        const apiUrl = 'http://127.0.0.1:8000/api_v1/games/get_game_info/?game_id=1';
+        const gamesList = document.getElementById('games-list');
+        const loading = document.getElementById('loading');
+
+        // Функция для получения данных об игре
+        async function fetchGameData(gameId) {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api_v1/games/get_game_info/?game_id=${gameId}`);
+                if (!response.ok) {
+                    throw new Error(`Ошибка HTTP: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Ошибка:', error);
+                return null;
+            }
+        }
+
+        // Функция для вывода списка игр (здесь предполагается, что API поддерживает получение всех игр)
+        async function loadGames() {
+            loading.textContent = 'Загрузка...';
+            gamesList.innerHTML = '';
+
+            try {
+                // Если API не поддерживает получение всех игр сразу, можно вручную перебирать ID
+                // (но это неэффективно, лучше попросить бэкенд добавить эндпоинт для списка)
+                const gameData = await fetchGameData(1); // Пример для одной игры
+
+                if (gameData) {
+                    loading.textContent = '';
+                    const li = document.createElement('li');
+                    li.textContent = `ID: ${gameData.id}, Название: ${gameData.name || 'Нет данных'}`;
+                    gamesList.appendChild(li);
+                } else {
+                    loading.textContent = 'Данные не получены.';
+                }
+            } catch (error) {
+                loading.textContent = '';
+                const errorElement = document.createElement('div');
+                errorElement.className = 'error';
+                errorElement.textContent = `Ошибка: ${error.message}`;
+                document.body.appendChild(errorElement);
+            }
+        }
+
+        // Загружаем игры при открытии страницы
+        loadGames();
+    </script>
+</body>
+</html>
