@@ -16,6 +16,7 @@ async def super_user_create(user_data: SuperUserCreate,
     await session.refresh(user)
     return user
 
+
 async def super_user_login(username: str,
                            password: str,
                            session: AsyncSession) -> User | HTTPException:
@@ -29,3 +30,11 @@ async def super_user_login(username: str,
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail='Wrong password.')
     return user
+
+
+async def super_user_delete(user: User,
+                            session: AsyncSession):
+    await session.delete(user)
+    await session.commit()
+    return {"User successfully deleted!"}
+
