@@ -1,8 +1,12 @@
 from datetime import date
-from sqlalchemy.orm import Mapped, mapped_column
+from typing import TYPE_CHECKING
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from core.models.mixins import IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin
 from core.models import Base
+
+if TYPE_CHECKING:
+    from core.models.review import Review
 
 
 class User(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):
@@ -17,3 +21,4 @@ class User(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):
     verified: Mapped[bool] = mapped_column(nullable=False)
     role_access: Mapped[str] = mapped_column(nullable=False)
     date_of_birth: Mapped[date] = mapped_column(nullable=True)
+    reviews: Mapped[list["Review"]] = relationship(back_populates="user")
