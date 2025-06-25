@@ -2,11 +2,11 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api_v1.superuser.crud import super_user_create, super_user_login
+from api_v1.superuser.crud import super_user_create, super_user_login, super_user_delete
 from api_v1.superuser.schemas import SuperUserRead, SuperUserCreate
+from core.models import User
 from utils.db_helper import db_helper
-from utils.token_helpers import create_access_token, create_refresh_token, TokenModel
-
+from utils.token_helpers import create_access_token, create_refresh_token, TokenModel, get_user_by_token
 
 router = APIRouter(prefix='/superuser', tags=['Superuser'])
 
@@ -28,3 +28,10 @@ async def login_super_user_view(form_data: OAuth2PasswordRequestForm = Depends()
     refresh_token = create_refresh_token(user=user)
     return TokenModel(access_token=access_token,
                       refresh_token=refresh_token)
+
+
+@router.delete('/superuser_delete')
+async def delete_super_user_view(session: AsyncSession = Depends(db_helper.session_getter),
+                                 user: User = Depends(get_user_by_token)):
+    return await super_user_delete(user=user,
+                                   session=session)
