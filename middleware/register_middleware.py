@@ -10,7 +10,7 @@ from .logging_middleware import logging_middleware_dispatch
 
 def register_middleware(app: FastAPI):
     app.add_middleware(CORSMiddleware,
-                       allow_origins=settings.middleware_config.allow_origins,
+                       allow_origins=['*'],
                        allow_methods=['*'],
                        allow_headers=['*'])
 
