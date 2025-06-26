@@ -11,9 +11,9 @@ if TYPE_CHECKING:
 
 
 class Review(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):
-    ratings: Mapped[int] = mapped_column(nullable=False)
+    rating: Mapped[int] = mapped_column(nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     game_id: Mapped[int] = mapped_column(ForeignKey("game.id"))
-    game: Mapped["Game"] = relationship(back_populates="reviews")
+    game: Mapped["Game"] = relationship(back_populates="reviews", lazy="selectin")
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
-    user: Mapped["User"] = relationship(back_populates="reviews")
+    user: Mapped["User"] = relationship(back_populates="reviews", lazy="selectin")
