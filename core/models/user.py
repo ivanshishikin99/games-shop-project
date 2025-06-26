@@ -21,4 +21,5 @@ class User(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):
     verified: Mapped[bool] = mapped_column(nullable=False)
     role_access: Mapped[str] = mapped_column(nullable=False)
     date_of_birth: Mapped[date] = mapped_column(nullable=True)
-    reviews: Mapped[list["Review"]] = relationship(back_populates="user")
+    reviews: Mapped[list["Review"]] = relationship(back_populates="user",
+                                                   lazy="selectin")
