@@ -35,6 +35,12 @@ class MailConfig(BaseModel):
     port: int = 1025
 
 
+class RedisConfig(BaseModel):
+    prefix: str = 'cache'
+    hostname: str = 'localhost'
+    port: int = 6379
+
+
 class DbConfig(BaseModel):
     url: PostgresDsn
     echo: bool = False
@@ -74,6 +80,7 @@ class Settings(BaseSettings):
     auth_jwt: AuthJWT = AuthJWT()
     logging_config: LoggingConfig = LoggingConfig()
     task_iq_config: TaskIqConfig = TaskIqConfig()
+    redis_config: RedisConfig = RedisConfig()
     mail_config: MailConfig = MailConfig()
     middleware_config: MiddlewareConfig = MiddlewareConfig()
 
