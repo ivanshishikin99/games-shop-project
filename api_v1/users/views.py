@@ -44,6 +44,13 @@ async def login_user_view(response: Response,
                       refresh_token=refresh_token)
 
 
+@router.post('/logout')
+async def logout_user_view(response: Response):
+    response.delete_cookie("access_token")
+    response.delete_cookie("refresh_token")
+    return {"You have logged out successfully!"}
+
+
 @router.get('/get_user_info', response_model=UserRead, response_model_exclude_none=True,
             status_code=status.HTTP_200_OK)
 async def get_user_info_view(user: User = Depends(get_user_by_token)) -> User | HTTPException:
