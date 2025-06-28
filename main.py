@@ -1,8 +1,12 @@
 import asyncio
+from typing import AsyncIterator
+
 import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 
 from api_v1.views import router as api_v1_router
 from utils.delete_expired_verification_tokens import delete_tokens
@@ -10,10 +14,13 @@ from core.taskiq_broker import broker
 from error_handlers import register_error_handlers
 from middleware.register_middleware import register_middleware
 from utils.db_helper import db_helper
+from redis import asyncio as aioredis
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    redis = aioredis.from_url("redis://localhost:6379")
+    FastAPICache.init(RedisBackend(redis), prefix="cache")
     await broker.startup()
     asyncio.create_task(delete_tokens())
     yield
