@@ -1,6 +1,6 @@
 import uuid
 
-from fastapi import APIRouter, status, Depends, HTTPException, BackgroundTasks
+from fastapi import APIRouter, status, Depends, HTTPException, BackgroundTasks, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -30,13 +30,16 @@ async def register_user_view(user: UserCreate,
 
 
 @router.post('/login', response_model=TokenModel, status_code=status.HTTP_200_OK)
-async def login_user_view(form_data: OAuth2PasswordRequestForm = Depends(),
+async def login_user_view(response: Response,
+                          form_data: OAuth2PasswordRequestForm = Depends(),
                           session: AsyncSession = Depends(db_helper.session_getter)) -> TokenModel:
     user = await login_user(username=form_data.username,
                             password=form_data.password,
                             session=session)
     access_token = create_access_token(user=user)
     refresh_token = create_refresh_token(user=user)
+    response.set_cookie("access_token", access_token, httponly=True)
+    response.set_cookie("refresh_token", refresh_token, httponly=True)
     return TokenModel(access_token=access_token,
                       refresh_token=refresh_token)
 

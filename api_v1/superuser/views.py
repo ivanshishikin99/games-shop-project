@@ -1,4 +1,4 @@
-from fastapi import APIRouter, status, Depends, HTTPException
+from fastapi import APIRouter, status, Depends, HTTPException, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,13 +19,16 @@ async def create_super_user_view(user_data: SuperUserCreate,
 
 
 @router.post('/superuser_login', response_model=TokenModel, status_code=status.HTTP_202_ACCEPTED)
-async def login_super_user_view(form_data: OAuth2PasswordRequestForm = Depends(),
+async def login_super_user_view(response: Response,
+                                form_data: OAuth2PasswordRequestForm = Depends(),
                                 session: AsyncSession = Depends(db_helper.session_getter)) -> TokenModel | HTTPException:
     user = await super_user_login(username=form_data.username,
                                   password=form_data.password,
                                   session=session)
     access_token = create_access_token(user=user)
     refresh_token = create_refresh_token(user=user)
+    response.set_cookie("access_token", access_token)
+    response.set_cookie("refresh_token", refresh_token)
     return TokenModel(access_token=access_token,
                       refresh_token=refresh_token)
 
