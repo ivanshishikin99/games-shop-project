@@ -1,7 +1,8 @@
 import asyncio
 import uvicorn
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import ORJSONResponse
 
 from api_v1.views import router as api_v1_router
 from utils.delete_expired_verification_tokens import delete_tokens
@@ -20,18 +21,14 @@ async def lifespan(app: FastAPI):
     await broker.shutdown()
 
 app = FastAPI(lifespan=lifespan,
-              title='Games shop')
+              title='Games shop',
+              default_response_class=ORJSONResponse)
 
 register_error_handlers(app=app)
 
 register_middleware(app=app)
 
 app.include_router(router=api_v1_router)
-
-
-@app.get('/')
-async def main_page():
-    return {'Success'}
 
 if __name__ == '__main__':
     uvicorn.run('main:app',
