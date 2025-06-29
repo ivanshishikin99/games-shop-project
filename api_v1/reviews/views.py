@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.reviews.crud import create_review, delete_review
@@ -29,6 +30,7 @@ async def create_review_view(game_id: int,
 
 
 @router.get('/get_review')
+@cache(expire=60)
 async def get_review_by_id_view(review_id: int,
                                 review: Review = Depends(get_review_by_id_dependency)):
     return {"game": review.game.name,

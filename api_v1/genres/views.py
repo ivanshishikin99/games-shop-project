@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi_cache.decorator import cache
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.genres.crud import create_genre, update_genre, delete_genre
@@ -22,6 +23,7 @@ async def create_genre_view(genre: GenreCreate,
 
 
 @router.get('/get_genre_by_id', response_model=GenreRead, response_model_exclude_none=True)
+@cache(expire=60)
 async def get_genre_by_id_view(genre_id: int,
                                genre: Genre = Depends(get_genre_by_id_dependency),
                                user: User = Depends(get_user_by_token)) -> Genre:
@@ -30,6 +32,7 @@ async def get_genre_by_id_view(genre_id: int,
 
 
 @router.get('/get_games_by_genre_id')
+@cache(expire=60)
 async def get_games_by_genre_id_view(genre_id: int,
                                      genre: Genre = Depends(get_genre_by_id_dependency),
                                      user: User = Depends(get_user_by_token)):
