@@ -41,6 +41,15 @@ class RedisConfig(BaseModel):
     port: int = 6379
 
 
+class CeleryConfig(BaseModel):
+    backend: str = 'redis'
+    hostname: str = 'localhost'
+    username: str = 'guest'
+    password: str = 'guest'
+    port: int = 6379
+    include_path: str = "tasks.tasks"
+
+
 class DbConfig(BaseModel):
     url: PostgresDsn
     echo: bool = False
@@ -81,6 +90,7 @@ class Settings(BaseSettings):
     logging_config: LoggingConfig = LoggingConfig()
     task_iq_config: TaskIqConfig = TaskIqConfig()
     redis_config: RedisConfig = RedisConfig()
+    celery_config: CeleryConfig = CeleryConfig()
     mail_config: MailConfig = MailConfig()
     middleware_config: MiddlewareConfig = MiddlewareConfig()
 
