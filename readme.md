@@ -6,9 +6,13 @@ alembic revision --autogenerate
 
 docker compose up -d pg maildev rabbitmq
 
-#Initializing taskiq workers.
+#Initializing taskiq workers
 
 taskiq worker core:broker --fs-discover --tasks-pattern "**/tasks"
+
+#Initializing celery worker
+
+celery -A tasks.celery:celery worker --loglevel=INFO --pool=solo
 
 #If poetry stops working
 
