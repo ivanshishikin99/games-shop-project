@@ -23,9 +23,11 @@ router = APIRouter(prefix='/users', tags=['Users'])
 async def register_user_view(user: UserCreate,
                              session: AsyncSession = Depends(db_helper.session_getter)) -> User:
     user_created = await create_user(user=user,
-                             session=session)
+                                     session=session)
     if user_created.email:
-        await send_welcome_email.kiq(user_id=user_created.id)
+        send_welcome_email.delay(user_id=user_created.id,
+                                 user_email=user_created.email,
+                                 user_username=user_created.username)
     return user_created
 
 
