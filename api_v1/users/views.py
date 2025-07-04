@@ -7,8 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.users.crud import create_user, login_user, update_user_partial, delete_user, update_user_full
 from api_v1.users.schemas import UserRead, UserCreate, UserUpdatePartial, UserUpdate
-from background_tasks.background_email_sender import send_email_background_task
 from core.models import User, VerificationToken
+from tasks.tasks import send_email_verification_code
 from utils.db_helper import db_helper
 from mailing.email_helper import generate_secret_verification_code
 from utils.token_helpers import TokenModel, create_access_token, create_refresh_token, get_user_by_token
@@ -87,8 +87,7 @@ async def delete_user_view(user: User = Depends(get_user_by_token),
 
 
 @router.post('/verify_email')
-async def verify_email_view(background_tasks: BackgroundTasks,
-                            user: User = Depends(get_user_by_token),
+async def verify_email_view(user: User = Depends(get_user_by_token),
                             session: AsyncSession = Depends(db_helper.session_getter)):
     if not user.email:
         raise HTTPException(status_code=status.HTTP_412_PRECONDITION_FAILED,
@@ -97,9 +96,8 @@ async def verify_email_view(background_tasks: BackgroundTasks,
         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
                             detail='Your email has already been verified.')
     secret_code = generate_secret_verification_code()
-    background_tasks.add_task(send_email_background_task,
-                              user.id,
-                              secret_code)
+    send_email_verification_code.delay(user_email=user.email,
+                                       secret_code=secret_code)
     verification_token = VerificationToken(**{'token': secret_code,
                                               'user_email': user.email})
     session.add(verification_token)
