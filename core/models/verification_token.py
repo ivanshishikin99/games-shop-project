@@ -9,4 +9,4 @@ from core.models.mixins import IdIntPkMixin, CreatedAtMixin
 
 class VerificationToken(Base, IdIntPkMixin, CreatedAtMixin):
     token: Mapped[uuid.UUID]
-    user_email: Mapped[str] = mapped_column(ForeignKey('user.email'))
+    user_email: Mapped[str] = mapped_column(ForeignKey("user.email"))

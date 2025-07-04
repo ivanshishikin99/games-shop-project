@@ -23,7 +23,9 @@ async def delete_genre(genre: Genre, session: AsyncSession):
     return {"Item successfully deleted."}
 
 
-async def update_genre(genre: Genre, new_genre: GenreUpdate, session: AsyncSession) -> Genre:
+async def update_genre(
+    genre: Genre, new_genre: GenreUpdate, session: AsyncSession
+) -> Genre:
     for k, v in new_genre.model_dump().items():
         if k:
             setattr(genre, k, v)

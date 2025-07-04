@@ -8,19 +8,23 @@ from api_v1.users.dependencies import get_user_by_id_dependency
 from core.models import Review
 
 
-async def create_review(review: ReviewCreate, session: AsyncSession) -> Review | HTTPException:
+async def create_review(
+    review: ReviewCreate, session: AsyncSession
+) -> Review | HTTPException:
     try:
-        game = await get_game_by_id_dependency(game_id=review.game_id,
-                                        session=session)
+        game = await get_game_by_id_dependency(game_id=review.game_id, session=session)
     except:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Game not found!')
-    user = await get_user_by_id_dependency(user_id=review.user_id,
-                                     session=session)
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Game not found!"
+        )
+    user = await get_user_by_id_dependency(user_id=review.user_id, session=session)
     review_created = Review(**review.model_dump())
     session.add(review_created)
     await session.commit()
     await session.refresh(review_created)
-    statement = select(Review).where(Review.user_id==user.id, Review.game_id==game.id)
+    statement = select(Review).where(
+        Review.user_id == user.id, Review.game_id == game.id
+    )
     result = await session.execute(statement)
     review = result.scalar_one()
     review.game = game

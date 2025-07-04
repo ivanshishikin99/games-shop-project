@@ -7,7 +7,9 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent
 
-LOG_DEFAULT_FORMAT = "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
+LOG_DEFAULT_FORMAT = (
+    "[%(asctime)s.%(msecs)03d] %(module)10s:%(lineno)-3d %(levelname)-7s - %(message)s"
+)
 
 
 class LoggingConfig(BaseModel):
@@ -31,27 +33,27 @@ class TaskIqConfig(BaseModel):
 
 class MailConfig(BaseModel):
     admin_email: str = "games_shop@mail.ru"
-    hostname: str = 'localhost'
+    hostname: str = "localhost"
     port: int = 1025
 
 
 class RedisConfig(BaseModel):
-    prefix: str = 'cache'
-    hostname: str = 'localhost'
+    prefix: str = "cache"
+    hostname: str = "localhost"
     port: int = 6379
 
 
 class CeleryConfig(BaseModel):
-    backend: str = 'redis'
-    hostname: str = 'localhost'
-    username: str = 'guest'
-    password: str = 'guest'
+    backend: str = "redis"
+    hostname: str = "localhost"
+    username: str = "guest"
+    password: str = "guest"
     port: int = 6379
     include_path: str = "tasks.tasks"
-    result_backend: str = 'redis://localhost:6379/0'
+    result_backend: str = "redis://localhost:6379/0"
     visibility_timeout: int = 3600
-    task_serializer: str = 'json'
-    timezone: str = 'Europe/Moscow'
+    task_serializer: str = "json"
+    timezone: str = "Europe/Moscow"
 
 
 class DbConfig(BaseModel):
@@ -70,25 +72,24 @@ class DbConfig(BaseModel):
 
 
 class AuthJWT(BaseModel):
-    algorithm: str = 'RS256'
+    algorithm: str = "RS256"
     access_token_expire_minutes: int = 5
     refresh_token_expire_minutes: int = 42600
-    public_key_path: Path = BASE_DIR / 'certs' / 'public_key.pem'
-    private_key_path: Path = BASE_DIR / 'certs' / 'private_key.pem'
+    public_key_path: Path = BASE_DIR / "certs" / "public_key.pem"
+    private_key_path: Path = BASE_DIR / "certs" / "private_key.pem"
 
 
 class MiddlewareConfig(BaseModel):
-    allow_origins: list[str] = [
-    "http://localhost",
-    "http://localhost:8000"
-    ]
+    allow_origins: list[str] = ["http://localhost", "http://localhost:8000"]
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file='.env',
-                                      env_prefix='APP_CONFIG__',
-                                      env_nested_delimiter='__',
-                                      case_sensitive=False)
+    model_config = SettingsConfigDict(
+        env_file=".env",
+        env_prefix="APP_CONFIG__",
+        env_nested_delimiter="__",
+        case_sensitive=False,
+    )
     db: DbConfig
     auth_jwt: AuthJWT = AuthJWT()
     logging_config: LoggingConfig = LoggingConfig()

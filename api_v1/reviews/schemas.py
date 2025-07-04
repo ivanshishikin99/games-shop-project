@@ -14,9 +14,11 @@ class ReviewRead(BaseModel):
     game_id: int
     user_id: int
 
+
 class ReviewUpdateFull(BaseModel):
     rating: int
     description: str
+
 
 class ReviewUpdatePartial(BaseModel):
     rating: int | None

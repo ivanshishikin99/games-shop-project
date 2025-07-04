@@ -7,15 +7,18 @@ from fastapi import Request, Response
 @dataclass
 class PathCountInfo:
     count: int = 0
-    status_counts: defaultdict[int: int] = field(default_factory=lambda: defaultdict(int))
+    status_counts: defaultdict[int:int] = field(
+        default_factory=lambda: defaultdict(int)
+    )
 
 
 class RequestsCountMiddlewareDispatch:
     def __init__(self):
         self.counted_requests = defaultdict[str, PathCountInfo](PathCountInfo)
 
-    async def __call__(self, request: Request,
-                       call_next: Callable[[Request], Awaitable[Response]]) -> Response:
+    async def __call__(
+        self, request: Request, call_next: Callable[[Request], Awaitable[Response]]
+    ) -> Response:
         path = request.url.path
         self.counted_requests[path].count += 1
         try:

@@ -8,7 +8,7 @@ from api_v1.reviews.views import router as reviews_router
 from api_v1.service import router as service_router
 
 
-router = APIRouter(prefix='/api_v1')
+router = APIRouter(prefix="/api_v1")
 
 router.include_router(users_router)
 

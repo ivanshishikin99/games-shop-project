@@ -1,7 +1,8 @@
-__all__ = ('IdIntPkMixin',
-           'CreatedAtMixin',
-           'UpdatedAtMixin',
-           )
+__all__ = (
+    "IdIntPkMixin",
+    "CreatedAtMixin",
+    "UpdatedAtMixin",
+)
 
 from .id_int_pk import IdIntPkMixin
 from .created_at_mixin import CreatedAtMixin

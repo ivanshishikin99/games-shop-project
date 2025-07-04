@@ -31,7 +31,6 @@ class GameUpdatePartial(BaseModel):
     genres: list[str] | None = None
 
 
-
 class GameUpdateFull(BaseModel):
     name: str
     price: int

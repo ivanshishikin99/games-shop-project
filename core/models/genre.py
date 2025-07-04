@@ -9,11 +9,8 @@ if TYPE_CHECKING:
     from core.models.game import Game
 
 
-
 class Genre(Base, IdIntPkMixin):
     genre_name: Mapped[str] = mapped_column(nullable=False, unique=True)
-    games: Mapped[list["Game"]] = relationship(secondary=game_genre_association_table, back_populates="genres", lazy="selectin")
-
-
-
-
+    games: Mapped[list["Game"]] = relationship(
+        secondary=game_genre_association_table, back_populates="genres", lazy="selectin"
+    )
