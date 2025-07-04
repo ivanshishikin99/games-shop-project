@@ -14,6 +14,10 @@ taskiq worker core:broker --fs-discover --tasks-pattern "**/tasks"
 
 celery -A tasks.celery:celery worker --loglevel=INFO --pool=solo
 
+#Initializing celery flower
+
+celery -A tasks.celery:celery flower
+
 #If poetry stops working
 
 python -m pip install requests-toolbelt 
