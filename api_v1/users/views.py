@@ -96,7 +96,8 @@ async def verify_email_view(user: User = Depends(get_user_by_token),
         raise HTTPException(status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
                             detail='Your email has already been verified.')
     secret_code = generate_secret_verification_code()
-    send_email_verification_code.delay(user_email=user.email,
+    send_email_verification_code.delay(user_id=user.id,
+                                       user_email=user.email,
                                        secret_code=secret_code)
     verification_token = VerificationToken(**{'token': secret_code,
                                               'user_email': user.email})
