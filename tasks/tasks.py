@@ -1,8 +1,7 @@
-from mailing.email_helper import send_welcome_email as send
-from mailing.email_helper import send_email
-from tasks.celery import celery
-
 from logger import log
+from mailing.email_helper import send_email
+from mailing.email_helper import send_welcome_email as send
+from tasks.celery import celery
 
 
 @celery.task(bind=True, max_retries=5)

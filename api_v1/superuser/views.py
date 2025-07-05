@@ -1,15 +1,15 @@
-from fastapi import APIRouter, status, Depends, HTTPException, Response
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api_v1.superuser.crud import super_user_create, super_user_login, super_user_delete
-from api_v1.superuser.schemas import SuperUserRead, SuperUserCreate
+from api_v1.superuser.crud import super_user_create, super_user_delete, super_user_login
+from api_v1.superuser.schemas import SuperUserCreate, SuperUserRead
 from core.models import User
 from utils.db_helper import db_helper
 from utils.token_helpers import (
+    TokenModel,
     create_access_token,
     create_refresh_token,
-    TokenModel,
     get_user_by_token,
 )
 

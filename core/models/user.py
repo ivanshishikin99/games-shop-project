@@ -1,9 +1,10 @@
 from datetime import date
 from typing import TYPE_CHECKING
+
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from core.models.mixins import IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin
 from core.models import Base
+from core.models.mixins import CreatedAtMixin, IdIntPkMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from core.models.review import Review

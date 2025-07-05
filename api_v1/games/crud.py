@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from api_v1.games.schemas import GameCreate, GameUpdatePartial, GameUpdateFull
+from api_v1.games.schemas import GameCreate, GameUpdateFull, GameUpdatePartial
 from core.models import Game, Genre
 
 

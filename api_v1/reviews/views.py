@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.reviews.crud import create_review, delete_review
 from api_v1.reviews.dependencies import get_review_by_id_dependency
-from api_v1.reviews.schemas import ReviewRead, ReviewCreate
-from core.models import User, Review
+from api_v1.reviews.schemas import ReviewCreate, ReviewRead
+from core.models import Review, User
 from utils.db_helper import db_helper
 from utils.token_helpers import get_user_by_token
 

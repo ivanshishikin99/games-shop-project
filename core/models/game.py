@@ -2,9 +2,10 @@ from datetime import date
 from typing import TYPE_CHECKING
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from core.models.base import Base
-from core.models.mixins import IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin
 from core.models.game_genre import game_genre_association_table
+from core.models.mixins import CreatedAtMixin, IdIntPkMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from core.models.genre import Genre

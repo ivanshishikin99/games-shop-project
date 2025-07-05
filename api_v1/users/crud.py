@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from api_v1.users.schemas import UserCreate, UserUpdatePartial, UserUpdate
+from api_v1.users.schemas import UserCreate, UserUpdate, UserUpdatePartial
 from core.models import User, VerificationToken
 from utils.password_helpers import hash_password, verify_password
 

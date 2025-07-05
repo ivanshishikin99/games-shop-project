@@ -1,9 +1,11 @@
-from sqlalchemy.orm import mapped_column, Mapped, relationship
 from typing import TYPE_CHECKING
 
-from core.models.mixins import IdIntPkMixin
-from . import Base
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from core.models.game_genre import game_genre_association_table
+from core.models.mixins import IdIntPkMixin
+
+from . import Base
 
 if TYPE_CHECKING:
     from core.models.game import Game

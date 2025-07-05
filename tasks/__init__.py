@@ -4,6 +4,7 @@ import logging
 import sys
 
 from core.config import settings
+
 from .tasks import send_welcome_email
 
 if sys.argv[0] == "worker":

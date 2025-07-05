@@ -1,6 +1,6 @@
-import jwt
+from datetime import datetime, timedelta, timezone
 
-from datetime import datetime, timezone, timedelta
+import jwt
 
 from core.config import settings
 

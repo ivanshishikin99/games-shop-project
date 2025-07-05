@@ -1,8 +1,8 @@
 import asyncio
+from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
 import uvicorn
-from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.responses import ORJSONResponse
 from fastapi_cache import FastAPICache
@@ -10,12 +10,12 @@ from fastapi_cache.backends.redis import RedisBackend
 from redis import asyncio as aioredis
 
 from api_v1.views import router as api_v1_router
-from utils.delete_expired_verification_tokens import delete_tokens
+from core.config import settings
 from core.taskiq_broker import broker
 from error_handlers import register_error_handlers
 from middleware.register_middleware import register_middleware
 from utils.db_helper import db_helper
-from core.config import settings
+from utils.delete_expired_verification_tokens import delete_tokens
 
 
 @asynccontextmanager

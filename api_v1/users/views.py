@@ -1,30 +1,29 @@
 import uuid
 
-from fastapi import APIRouter, status, Depends, HTTPException, BackgroundTasks, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.users.crud import (
     create_user,
-    login_user,
-    update_user_partial,
     delete_user,
+    login_user,
     update_user_full,
+    update_user_partial,
 )
-from api_v1.users.schemas import UserRead, UserCreate, UserUpdatePartial, UserUpdate
+from api_v1.users.schemas import UserCreate, UserRead, UserUpdate, UserUpdatePartial
 from core.models import User, VerificationToken
+from mailing.email_helper import generate_secret_verification_code
+from tasks import send_welcome_email
 from tasks.tasks import send_email_verification_code
 from utils.db_helper import db_helper
-from mailing.email_helper import generate_secret_verification_code
 from utils.token_helpers import (
     TokenModel,
     create_access_token,
     create_refresh_token,
     get_user_by_token,
 )
-from tasks import send_welcome_email
-
 
 router = APIRouter(prefix="/users", tags=["Users"])
 

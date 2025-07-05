@@ -1,13 +1,13 @@
-from fastapi import HTTPException, status, Depends
+from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from core.config import settings
-from core.models import User, SuperUser
+from core.models import SuperUser, User
 from utils.db_helper import db_helper
-from utils.jwt_helpers import encode_jwt, decode_jwt
+from utils.jwt_helpers import decode_jwt, encode_jwt
 
 
 class TokenModel(BaseModel):

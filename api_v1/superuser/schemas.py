@@ -1,5 +1,6 @@
 from datetime import date, datetime
-from pydantic import EmailStr, field_validator, BaseModel
+
+from pydantic import BaseModel, EmailStr, field_validator
 
 
 class SuperUserCreate(BaseModel):

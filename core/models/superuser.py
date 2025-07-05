@@ -1,8 +1,9 @@
 from datetime import date
+
 from sqlalchemy.orm import Mapped, mapped_column
 
 from core.models import Base
-from core.models.mixins import IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin
+from core.models.mixins import CreatedAtMixin, IdIntPkMixin, UpdatedAtMixin
 
 
 class SuperUser(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):

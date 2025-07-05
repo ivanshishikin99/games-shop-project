@@ -1,4 +1,5 @@
-from typing import Callable, Awaitable
+from typing import Awaitable, Callable
+
 from fastapi import Request, Response
 
 from logger import log

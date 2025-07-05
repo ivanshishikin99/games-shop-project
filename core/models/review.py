@@ -1,9 +1,10 @@
-from sqlalchemy import Text, ForeignKey
-from sqlalchemy.orm import Mapped, mapped_column, relationship
 from typing import TYPE_CHECKING
 
+from sqlalchemy import ForeignKey, Text
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+
 from core.models import Base
-from core.models.mixins import IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin
+from core.models.mixins import CreatedAtMixin, IdIntPkMixin, UpdatedAtMixin
 
 if TYPE_CHECKING:
     from core.models.game import Game

@@ -1,6 +1,7 @@
 from collections import defaultdict
 from dataclasses import dataclass, field
-from typing import Callable, Awaitable
+from typing import Awaitable, Callable
+
 from fastapi import Request, Response
 
 

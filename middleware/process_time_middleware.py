@@ -1,7 +1,7 @@
 import time
+from typing import Awaitable, Callable
 
 from fastapi import Request, Response
-from typing import Callable, Awaitable
 
 
 class ProcessTimeHeaderMiddlewareDispatch:

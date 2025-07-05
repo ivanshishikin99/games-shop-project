@@ -2,7 +2,6 @@ from fastapi import APIRouter
 
 from middleware.requests_count_middleware import requests_count_middleware_dispatch
 
-
 router = APIRouter(prefix="/service", tags=["Service"])
 
 

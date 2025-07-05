@@ -1,21 +1,19 @@
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi_cache.decorator import cache
-
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from api_v1.games.crud import (
     create_game,
     delete_game,
-    update_game_partial,
     update_game_full,
+    update_game_partial,
 )
 from api_v1.games.dependencies import get_game_by_id_dependency
-from api_v1.games.schemas import GameRead, GameCreate, GameUpdatePartial, GameUpdateFull
+from api_v1.games.schemas import GameCreate, GameRead, GameUpdateFull, GameUpdatePartial
 from core.models import Game, User
-from utils.super_user_validation import super_user_validate
 from utils.db_helper import db_helper
+from utils.super_user_validation import super_user_validate
 from utils.token_helpers import get_user_by_token
-
 
 router = APIRouter(prefix="/games", tags=["Games"])
 

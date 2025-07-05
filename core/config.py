@@ -1,9 +1,9 @@
 import logging
 from pathlib import Path
 from typing import Literal
-from pydantic import BaseModel, PostgresDsn, AmqpDsn
-from pydantic_settings import BaseSettings, SettingsConfigDict
 
+from pydantic import AmqpDsn, BaseModel, PostgresDsn
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 BASE_DIR = Path(__file__).parent.parent
 

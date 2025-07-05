@@ -1,6 +1,7 @@
-import uuid
 import smtplib
+import uuid
 from email.message import EmailMessage
+
 from core.config import settings
 
 
