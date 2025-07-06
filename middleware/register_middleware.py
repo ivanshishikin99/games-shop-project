@@ -2,8 +2,6 @@ from fastapi import FastAPI
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.middleware.cors import CORSMiddleware
 
-from core.config import settings
-
 from .logging_middleware import logging_middleware_dispatch
 from .process_time_middleware import process_time_header_middleware_dispatch
 from .requests_count_middleware import requests_count_middleware_dispatch
