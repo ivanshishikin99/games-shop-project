@@ -1,7 +1,9 @@
 from fastapi import FastAPI, Request, status
 from pydantic import ValidationError
+from slowapi import _rate_limit_exceeded_handler
 from sqlalchemy.exc import DatabaseError
 from starlette.responses import JSONResponse
+from slowapi.errors import RateLimitExceeded
 
 from logger import log
 
@@ -22,3 +24,5 @@ def register_error_handlers(app: FastAPI) -> None:
             status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
             content={"message": "Unhandled database error.", "error": exc.errors()},
         )
+
+    app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
