@@ -2,8 +2,9 @@ import logging
 from pathlib import Path
 from typing import Literal
 
-from pydantic import AmqpDsn, BaseModel, PostgresDsn
+from pydantic import AmqpDsn, BaseModel, PostgresDsn, ConfigDict
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from sqlalchemy import NullPool, Pool
 
 BASE_DIR = Path(__file__).parent.parent
 
@@ -90,6 +91,7 @@ class Settings(BaseSettings):
         env_nested_delimiter="__",
         case_sensitive=False,
     )
+    mode: Literal["DEV", "TEST", "PROD"]
     db: DbConfig
     auth_jwt: AuthJWT = AuthJWT()
     logging_config: LoggingConfig = LoggingConfig()
