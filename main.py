@@ -48,8 +48,8 @@ register_middleware(app=app)
 app.include_router(router=api_v1_router)
 
 @app.get('/')
-async def simple_path(request: Request):
-    return "Success"
+async def main_page(request: Request):
+    return {"message": "Welcome to our games shop!"}
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True)
