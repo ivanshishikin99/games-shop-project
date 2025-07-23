@@ -15,7 +15,7 @@ class DbHelper:
             echo=echo,
             echo_pool=echo_pool,
             max_overflow=max_overflow,
-            pool_size=pool_size,
+            pool_size=pool_size
         )
 
         self.session_maker = async_sessionmaker(
@@ -35,9 +35,8 @@ db_helper = DbHelper(
     echo=settings.db.echo,
     echo_pool=settings.db.echo_pool,
     max_overflow=settings.db.max_overflow,
-    pool_size=settings.db.pool_size,
+    pool_size=settings.db.pool_size
 )
-
 
 class DbHelperSync:
     def __init__(
