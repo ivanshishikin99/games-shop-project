@@ -12,6 +12,45 @@ services:
     volumes:
       - rabbitmq-data:/var/lib/rabbitmq
 
+  games_shop:
+    image: games_shop_image
+    build:
+      context: .
+    container_name: games_shop_app
+    env_file:
+      - .env
+    depends_on:
+      - pg
+      - redis
+      - prometheus
+      - grafana
+    command: [ "docker/app.sh" ]
+    ports:
+      - 7777:8000
+
+  redis:
+    image: redis:7
+    container_name: redis
+
+  prometheus:
+    image: prom/prometheus:v2.43.0
+    container_name: prometheus
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheusdata:/prometheus
+    restart: unless-stopped
+    ports:
+      - 9090:9090
+
+  grafana:
+    image: grafana/grafana:9.4.7
+    container_name: grafana
+    volumes:
+      - grafanadata:/var/lib/grafana
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+
   pg:
     image: postgres
     environment:
@@ -43,21 +82,27 @@ services:
       options:
         max-size: "1m"
 
-  adminer:
-    image: adminer
-    ports:
-      - "8080:8080"
+  taskiq:
+    build:
+      context: .
+    container_name: taskiq_broker
+    command: [ "docker/taskiq.sh" ]
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: admin@admin.org
-      PGADMIN_DEFAULT_PASSWORD: admin
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
-    ports:
-      - "5050:80"
+  celery:
+    build:
+      context: .
+    container_name: celery_broker
+    command: [ "docker/celery.sh" ]
+
+  flower:
+    build:
+      context: .
+    container_name: celery_flower
+    command: [ "docker/flower.sh" ]
 
 
 volumes:
+  grafanadata:
+  prometheusdata:
   pgdata:
   rabbitmq-data:
