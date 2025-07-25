@@ -7,6 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from prometheus_fastapi_instrumentator import Instrumentator
 from redis import asyncio as aioredis
 from slowapi import Limiter
 from slowapi.util import get_remote_address
@@ -39,6 +40,12 @@ app = FastAPI(
 limiter = Limiter(key_func=get_remote_address, default_limits=["20/minute"])
 
 app.state.limiter = limiter
+
+
+instrumentator = Instrumentator(should_group_status_codes=False,
+                                excluded_handlers=["/metrics"])
+
+instrumentator.instrument(app).expose(app)
 
 
 register_error_handlers(app=app)
