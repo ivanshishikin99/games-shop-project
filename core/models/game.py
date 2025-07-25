@@ -10,6 +10,8 @@ from core.models.mixins import CreatedAtMixin, IdIntPkMixin, UpdatedAtMixin
 if TYPE_CHECKING:
     from core.models.genre import Genre
     from core.models.review import Review
+    from core.models.order import Order
+    from core.models.order_game import OrderProductAssociation
 
 
 class Game(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):
@@ -24,4 +26,9 @@ class Game(Base, IdIntPkMixin, CreatedAtMixin, UpdatedAtMixin):
     )
     genres: Mapped[list["Genre"]] = relationship(
         secondary=game_genre_association_table, back_populates="games", lazy="selectin"
+    )
+    orders: Mapped[list["Order"]] = relationship(
+        secondary="order_game_association", back_populates="games")
+    orders_details: Mapped[list["OrderProductAssociation"]] = relationship(
+        back_populates="game"
     )
